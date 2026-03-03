@@ -1,18 +1,17 @@
-import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 
-export default async function Home() {
-  await prisma.user.upsert({
-  where: { email: "test@example.com" },
-  update: { name: "Test User" },
-  create: { email: "test@example.com", name: "Test User" },
-});
-
-  const users = await prisma.user.findMany();
-
+export default function Home() {
   return (
     <main className="p-8">
-      <h1 className="text-2xl font-bold">Database Working ✅</h1>
-      <pre>{JSON.stringify(users, null, 2)}</pre>
+      <h1 className="text-2xl font-bold">Home</h1>
+      <div className="mt-4 flex gap-3">
+        <Link className="rounded bg-black px-4 py-2 text-white" href="/dashboard">
+          Dashboard
+        </Link>
+        <Link className="rounded border px-4 py-2" href="/account">
+          Account
+        </Link>
+      </div>
     </main>
   );
 }
