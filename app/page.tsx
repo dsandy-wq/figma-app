@@ -5,7 +5,13 @@ export default function Home() {
     <main className="p-8">
       <h1 className="text-2xl font-bold">Home</h1>
       <div className="mt-4 flex gap-3">
-        <Link className="rounded bg-black px-4 py-2 text-white" href="/dashboard">
+        <Link className="rounded bg-black px-4 py-2 text-white" href="/signin">
+          Sign in
+        </Link>
+        <Link className="rounded border px-4 py-2" href="/register">
+          Register
+        </Link>
+        <Link className="rounded border px-4 py-2" href="/dashboard">
           Dashboard
         </Link>
         <Link className="rounded border px-4 py-2" href="/account">

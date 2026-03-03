@@ -14,7 +14,7 @@ export default async function AccountPage() {
           <p className="mt-2">You are not signed in.</p>
           <Link
             className="inline-block mt-4 rounded bg-black px-4 py-2 text-white"
-            href="/api/auth/signin"
+            href="/signin"
           >
             Sign in
           </Link>
