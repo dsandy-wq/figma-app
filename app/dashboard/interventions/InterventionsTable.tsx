@@ -131,6 +131,9 @@ export default function InterventionsTable({ interventions }: { interventions: I
 
                     {!isCompleted && (
                       <div className="relative">
+                        {deferOpen && (
+                          <div className="fixed inset-0 z-40" onClick={() => setOpenDeferId(null)} />
+                        )}
                         <button
                           disabled={isLoading}
                           onClick={() => setOpenDeferId(deferOpen ? null : r.id)}
