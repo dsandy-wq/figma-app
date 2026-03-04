@@ -1,57 +1,152 @@
-const steps = [
-  { n: 1, title: "Initial Invoice Sent",       desc: "Invoice issued and delivered to client",          status: "complete" },
-  { n: 2, title: "Payment Reminder (7 days)",  desc: "Automated reminder sent 7 days before due date",  status: "complete" },
-  { n: 3, title: "Overdue Notice",             desc: "Formal overdue notice issued",                    status: "active" },
-  { n: 4, title: "Phone Follow-up",            desc: "Direct call to accounts contact",                 status: "pending" },
-  { n: 5, title: "Final Demand Letter",        desc: "Formal letter before legal action",               status: "pending" },
-  { n: 6, title: "Legal / Debt Recovery",      desc: "Refer to debt recovery team if unresolved",       status: "pending" },
-];
+"use client";
 
-const clients = [
-  { name: "Acme Corp",      amount: "£1,200", step: 3, days: 14 },
-  { name: "Falcon Ltd",     amount: "£750",   step: 3, days: 8  },
-];
+import { useState } from "react";
+import { CheckCircle, Mail, Phone, FileWarning, Scale } from "lucide-react";
 
-const statusStyle: Record<string, string> = {
-  complete: "bg-green-500 text-white",
-  active:   "bg-[#3b82f6] text-white",
-  pending:  "bg-[#f1f5f9] text-[#94a3b8]",
+type Client = {
+  name: string;
+  amount: string;
+  daysOverdue: number;
+  stage: number;
 };
 
+const clients: Client[] = [
+  { name: "Acme Corp",  amount: "£1,200", daysOverdue: 14, stage: 3 },
+  { name: "Falcon Ltd", amount: "£750",   daysOverdue: 8,  stage: 3 },
+];
+
+const COMMS = [
+  {
+    id: "reminder",
+    label: "Payment Reminder",
+    icon: Mail,
+    style:   "border-blue-200   bg-blue-50   text-blue-700",
+    sentStyle: "border-blue-500   bg-blue-500   text-white",
+  },
+  {
+    id: "overdue",
+    label: "Overdue Notice",
+    icon: FileWarning,
+    style:   "border-orange-200 bg-orange-50 text-orange-700",
+    sentStyle: "border-orange-500 bg-orange-500 text-white",
+  },
+  {
+    id: "final",
+    label: "Final Demand",
+    icon: Mail,
+    style:   "border-red-200    bg-red-50    text-red-700",
+    sentStyle: "border-red-500    bg-red-500    text-white",
+  },
+  {
+    id: "phone",
+    label: "Log Phone Call",
+    icon: Phone,
+    style:   "border-[#e2e8f0]  bg-[#f8fafc] text-[#475569]",
+    sentStyle: "border-[#475569]  bg-[#475569]  text-white",
+  },
+  {
+    id: "legal",
+    label: "Refer to Recovery",
+    icon: Scale,
+    style:   "border-purple-200 bg-purple-50 text-purple-700",
+    sentStyle: "border-purple-500 bg-purple-500 text-white",
+  },
+] as const;
+
+const STAGES = [
+  "Initial Invoice",
+  "7-Day Reminder",
+  "Overdue Notice",
+  "Phone Follow-up",
+  "Final Demand",
+  "Legal / Recovery",
+];
+
 export default function CreditControlPage() {
+  // Track sent comms: Set of "clientName::commId"
+  const [sent, setSent] = useState<Set<string>>(new Set());
+
+  function handleSend(clientName: string, commId: string) {
+    setSent((prev) => new Set(prev).add(`${clientName}::${commId}`));
+  }
+
+  function isSent(clientName: string, commId: string) {
+    return sent.has(`${clientName}::${commId}`);
+  }
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-[#0f172a]">Credit Control</h1>
-      <div className="grid grid-cols-2 gap-6">
-        <div className="rounded-xl bg-white p-6 shadow-sm">
-          <h2 className="mb-5 font-semibold text-[#0f172a]">Recovery Workflow</h2>
-          <div className="space-y-4">
-            {steps.map((s) => (
-              <div key={s.n} className="flex gap-4">
-                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${statusStyle[s.status]}`}>{s.n}</div>
-                <div>
-                  <p className={`font-medium text-sm ${s.status === "pending" ? "text-[#94a3b8]" : "text-[#0f172a]"}`}>{s.title}</p>
-                  <p className="text-xs text-[#64748b]">{s.desc}</p>
+
+      {/* Stage reference strip */}
+      <div className="rounded-xl bg-white px-6 py-4 shadow-sm">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[#64748b]">Recovery Stages</p>
+        <div className="flex items-center gap-0">
+          {STAGES.map((s, i) => (
+            <div key={s} className="flex items-center">
+              <div className="flex flex-col items-center">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#f1f5f9] text-xs font-bold text-[#64748b]">
+                  {i + 1}
                 </div>
+                <p className="mt-1 max-w-[72px] text-center text-[10px] leading-tight text-[#64748b]">{s}</p>
               </div>
-            ))}
-          </div>
+              {i < STAGES.length - 1 && (
+                <div className="mx-1 mb-4 h-px w-8 bg-[#e2e8f0]" />
+              )}
+            </div>
+          ))}
         </div>
-        <div className="rounded-xl bg-white p-6 shadow-sm">
-          <h2 className="mb-5 font-semibold text-[#0f172a]">Active Cases</h2>
-          <div className="space-y-4">
+      </div>
+
+      {/* Client table with action tiles */}
+      <div className="rounded-xl bg-white shadow-sm overflow-hidden">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-[#f1f5f9] text-left text-[#64748b]">
+              <th className="px-6 py-3 font-medium">Client</th>
+              <th className="px-6 py-3 font-medium">Amount</th>
+              <th className="px-6 py-3 font-medium">Days Overdue</th>
+              <th className="px-6 py-3 font-medium">Stage</th>
+              <th className="px-6 py-3 font-medium">Issue Comms</th>
+            </tr>
+          </thead>
+          <tbody>
             {clients.map((c) => (
-              <div key={c.name} className="rounded-lg border border-[#e2e8f0] p-4">
-                <div className="flex justify-between">
-                  <p className="font-medium text-[#0f172a]">{c.name}</p>
-                  <p className="font-semibold text-[#ef4444]">{c.amount}</p>
-                </div>
-                <p className="mt-1 text-xs text-[#64748b]">Step {c.step} • {c.days} days overdue</p>
-                <button className="mt-3 rounded-lg bg-[#3b82f6] px-3 py-1.5 text-xs font-medium text-white">Log Contact</button>
-              </div>
+              <tr key={c.name} className="border-b border-[#f8fafc] last:border-0 align-top hover:bg-[#fafcff]">
+                <td className="px-6 py-4 font-medium text-[#0f172a]">{c.name}</td>
+                <td className="px-6 py-4 font-semibold text-[#ef4444]">{c.amount}</td>
+                <td className="px-6 py-4 text-[#64748b]">{c.daysOverdue} days</td>
+                <td className="px-6 py-4 text-[#64748b]">
+                  Step {c.stage} — {STAGES[c.stage - 1]}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex flex-wrap gap-2">
+                    {COMMS.map((comm) => {
+                      const done = isSent(c.name, comm.id);
+                      const Icon = comm.icon;
+                      return (
+                        <button
+                          key={comm.id}
+                          onClick={() => !done && handleSend(c.name, comm.id)}
+                          disabled={done}
+                          className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
+                            done ? comm.sentStyle + " cursor-default" : comm.style + " hover:opacity-80"
+                          }`}
+                        >
+                          {done
+                            ? <CheckCircle size={12} />
+                            : <Icon size={12} />
+                          }
+                          {comm.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </td>
+              </tr>
             ))}
-          </div>
-        </div>
+          </tbody>
+        </table>
       </div>
     </div>
   );
