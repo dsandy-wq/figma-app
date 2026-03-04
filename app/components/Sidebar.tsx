@@ -7,6 +7,7 @@ import {
   GitBranch, FileText, CreditCard, UserX, Infinity,
   BookOpen, Calendar, RefreshCw, TrendingUp, Settings, HelpCircle,
 } from "lucide-react";
+import HaloLogo from "./HaloLogo";
 
 const sections = [
   {
@@ -52,11 +53,9 @@ export default function Sidebar() {
   return (
     <aside className="fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-[#0f1629]">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-6 py-5">
-        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#f59e0b] to-[#d97706] text-white font-bold text-sm shadow-lg ring-2 ring-[#f59e0b]/30">
-          H
-        </div>
-        <span className="text-lg font-bold tracking-wide text-white">HALO</span>
+      <div className="flex items-center gap-3 px-5 py-4">
+        <HaloLogo size={38} />
+        <span className="text-xl font-semibold tracking-wide text-white">Halo</span>
       </div>
 
       {/* Nav */}

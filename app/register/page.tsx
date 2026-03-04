@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import HaloLogo from "@/app/components/HaloLogo";
 
 export default function RegisterPage() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail]       = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError]       = useState("");
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -27,33 +28,48 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="p-8">
-      <h1 className="text-2xl font-bold">Register</h1>
-      <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-3 max-w-sm">
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="rounded border px-3 py-2"
-        />
-        <input
-          type="password"
-          placeholder="Password (min 8 characters)"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="rounded border px-3 py-2"
-        />
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        <button type="submit" className="rounded bg-black px-4 py-2 text-white">
-          Create account
-        </button>
-        <Link className="rounded border px-4 py-2 text-center" href="/signin">
-          Already have an account? Sign in
-        </Link>
-      </form>
+    <main className="flex min-h-screen items-center justify-center bg-[#0f1629]">
+      <div className="w-full max-w-sm rounded-2xl bg-white px-8 py-10 shadow-2xl">
+        {/* Logo */}
+        <div className="mb-8 flex flex-col items-center gap-3">
+          <HaloLogo size={52} />
+          <span className="text-2xl font-semibold tracking-wide text-[#0f172a]">Halo</span>
+          <p className="text-sm text-[#64748b]">Create your account</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="rounded-lg border border-[#e2e8f0] px-4 py-2.5 text-sm text-[#0f172a] outline-none focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20"
+          />
+          <input
+            type="password"
+            placeholder="Password (min 8 characters)"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="rounded-lg border border-[#e2e8f0] px-4 py-2.5 text-sm text-[#0f172a] outline-none focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20"
+          />
+          {error && <p className="text-xs text-red-500">{error}</p>}
+          <button
+            type="submit"
+            className="mt-1 rounded-lg bg-[#3b82f6] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#2563eb] transition-colors"
+          >
+            Create account
+          </button>
+        </form>
+
+        <p className="mt-6 text-center text-xs text-[#64748b]">
+          Already have an account?{" "}
+          <Link href="/signin" className="font-medium text-[#3b82f6] hover:underline">
+            Sign in
+          </Link>
+        </p>
+      </div>
     </main>
   );
 }
