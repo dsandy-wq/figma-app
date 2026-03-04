@@ -12,11 +12,11 @@ const clients: Client[] = [
 ];
 
 const COMMS = [
-  { id: "reminder", label: "Payment Reminder",  icon: Mail,        style: "border-blue-200   bg-blue-50   text-blue-700",   sentStyle: "border-blue-400   bg-blue-50   text-blue-700"   },
-  { id: "overdue",  label: "Overdue Notice",     icon: FileWarning, style: "border-orange-200 bg-orange-50 text-orange-700", sentStyle: "border-orange-400 bg-orange-50 text-orange-700" },
-  { id: "final",    label: "Final Demand",       icon: Mail,        style: "border-red-200    bg-red-50    text-red-700",    sentStyle: "border-red-400    bg-red-50    text-red-700"    },
-  { id: "phone",    label: "Log Phone Call",     icon: Phone,       style: "border-[#e2e8f0]  bg-[#f8fafc] text-[#475569]", sentStyle: "border-[#94a3b8]  bg-[#f8fafc] text-[#475569]"  },
-  { id: "legal",    label: "Refer to Recovery",  icon: Scale,       style: "border-purple-200 bg-purple-50 text-purple-700", sentStyle: "border-purple-400 bg-purple-50 text-purple-700" },
+  { id: "reminder", label: "Payment Reminder",  icon: Mail,        style: "border-blue-200   bg-blue-50   text-blue-700",   sentStyle: "border-blue-600   bg-blue-600   text-white"   },
+  { id: "overdue",  label: "Overdue Notice",     icon: FileWarning, style: "border-orange-200 bg-orange-50 text-orange-700", sentStyle: "border-orange-500 bg-orange-500 text-white"   },
+  { id: "final",    label: "Final Demand",       icon: Mail,        style: "border-red-200    bg-red-50    text-red-700",    sentStyle: "border-red-600    bg-red-600    text-white"    },
+  { id: "phone",    label: "Log Phone Call",     icon: Phone,       style: "border-[#e2e8f0]  bg-[#f8fafc] text-[#475569]", sentStyle: "border-[#475569]  bg-[#475569]  text-white"    },
+  { id: "legal",    label: "Refer to Recovery",  icon: Scale,       style: "border-purple-200 bg-purple-50 text-purple-700", sentStyle: "border-purple-700 bg-purple-700 text-white"   },
 ] as const;
 
 const STAGES = ["Initial Invoice","7-Day Reminder","Overdue Notice","Phone Follow-up","Final Demand","Legal / Recovery"];
@@ -171,10 +171,13 @@ export default function CreditControlPage() {
                       return date ? (
                         <div
                           key={comm.id}
-                          className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium ${comm.sentStyle}`}
+                          className={`flex items-start gap-2 rounded-lg border px-3 py-2 text-xs font-medium ${comm.sentStyle}`}
                         >
-                          <CheckCircle size={12} className="shrink-0" />
-                          <span>{comm.label} — {fmtDate(date)}</span>
+                          <CheckCircle size={13} className="shrink-0 mt-0.5" />
+                          <div className="leading-tight">
+                            <p>{comm.label}</p>
+                            <p className="font-bold tracking-wide">Completed · {fmtDate(date)}</p>
+                          </div>
                         </div>
                       ) : (
                         <button
