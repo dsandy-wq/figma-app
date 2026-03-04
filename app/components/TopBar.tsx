@@ -12,6 +12,7 @@ const breadcrumbMap: Record<string, string> = {
   "/dashboard/onboardings":       "Operations / Active Onboardings",
   "/dashboard/interventions":     "Operations / Interventions Due",
   "/dashboard/stage-gates":       "Operations / Stage Gates",
+  "/dashboard/calendar":          "Operations / Task Calendar",
   "/dashboard/invoices":          "Finance / Invoice Tracker",
   "/dashboard/credit-control":    "Finance / Credit Control",
   "/dashboard/non-payers":        "Finance / Non-Payer Log",

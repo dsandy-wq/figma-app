@@ -140,7 +140,7 @@ export default function InterventionsTable({ interventions }: { interventions: I
                         </button>
 
                         {deferOpen && (
-                          <div className="absolute right-0 top-8 z-50 w-36 rounded-xl border border-[#e2e8f0] bg-white py-1 shadow-lg">
+                          <div className="absolute right-0 top-8 z-50 w-36 rounded-xl border border-[#e2e8f0] bg-white py-1 shadow-lg max-h-48 overflow-y-auto">
                             {DEFER_OPTIONS.map((opt) => (
                               <button
                                 key={opt.value}

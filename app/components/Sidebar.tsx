@@ -23,6 +23,7 @@ const sections = [
       { label: "Active Onboardings",  href: "/dashboard/onboardings",   icon: Activity },
       { label: "Interventions Due",   href: "/dashboard/interventions", icon: AlertCircle, badge: true },
       { label: "Stage Gates",         href: "/dashboard/stage-gates",   icon: GitBranch },
+      { label: "Task Calendar",       href: "/dashboard/calendar",      icon: Calendar },
     ],
   },
   {
