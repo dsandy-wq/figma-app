@@ -4,7 +4,6 @@ import { randomBytes } from "crypto";
 import { prisma } from "@/lib/prisma";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const SITE_URL    = process.env.NEXTAUTH_URL ?? "https://figma-app-black.vercel.app";
 const ADMIN_EMAIL = "craig@dbhalo.com";
 
@@ -29,6 +28,7 @@ export async function POST(request: Request) {
   });
 
   const approveUrl = `${SITE_URL}/api/approve?token=${approvalToken}`;
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
   await resend.emails.send({
     from: "Halo <noreply@dbhalo.com>",
