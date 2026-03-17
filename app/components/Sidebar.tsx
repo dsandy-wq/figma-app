@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutDashboard, Users, UserPlus, Activity, AlertCircle,
+  LayoutDashboard, Building2, Home, Users, Activity, AlertCircle,
   GitBranch, FileText, CreditCard, UserX, Infinity,
   BookOpen, Calendar, RefreshCw, TrendingUp, Settings, HelpCircle,
 } from "lucide-react";
@@ -11,11 +11,17 @@ import HaloLogo from "./HaloLogo";
 
 const sections = [
   {
-    label: "CLIENTS",
+    label: "OVERVIEW",
     items: [
-      { label: "Dashboard",   href: "/dashboard",              icon: LayoutDashboard },
-      { label: "All Clients", href: "/dashboard/clients",      icon: Users },
-      { label: "New Client",  href: "/dashboard/clients/new",  icon: UserPlus },
+      { label: "Dashboard",  href: "/dashboard",              icon: LayoutDashboard },
+    ],
+  },
+  {
+    label: "JOURNEYS",
+    items: [
+      { label: "Employers",  href: "/dashboard/employers",  icon: Building2 },
+      { label: "Nurseries",  href: "/dashboard/nurseries",  icon: Home },
+      { label: "Employees",  href: "/dashboard/employees",  icon: Users },
     ],
   },
   {

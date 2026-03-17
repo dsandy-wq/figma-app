@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 
 const colorMap = {
@@ -11,19 +12,17 @@ const colorMap = {
 type Color = keyof typeof colorMap;
 
 export default function StatCard({
-  label,
-  value,
-  color,
-  Icon,
+  label, value, color, Icon, href,
 }: {
   label: string;
   value: string | number;
   color: Color;
   Icon?: LucideIcon;
+  href?: string;
 }) {
   const c = colorMap[color];
-  return (
-    <div className={`flex items-center justify-between rounded-xl bg-white p-6 shadow-sm border-l-4 ${c.border}`}>
+  const inner = (
+    <div className={`flex items-center justify-between rounded-xl bg-white p-6 shadow-sm border-l-4 ${c.border} ${href ? "hover:bg-[#f8fafc] transition-colors" : ""}`}>
       <div>
         <p className="text-sm text-[#64748b]">{label}</p>
         <p className="mt-1 text-3xl font-bold text-[#0f172a]">{value}</p>
@@ -35,4 +34,6 @@ export default function StatCard({
       )}
     </div>
   );
+
+  return href ? <Link href={href}>{inner}</Link> : inner;
 }

@@ -4,19 +4,16 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export async function PATCH(
-  _req: Request,
+  req: Request,
   context: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await context.params;
+  const { assignedTo } = await req.json() as { assignedTo: string };
 
-  const intervention = await prisma.intervention.findUnique({ where: { id } });
-  if (!intervention) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  if (intervention.status === "completed") return NextResponse.json({ error: "Already completed" }, { status: 409 });
+  await prisma.intervention.update({ where: { id }, data: { assignedTo } });
 
-  await prisma.intervention.update({ where: { id }, data: { status: "completed" } });
-
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, assignedTo });
 }

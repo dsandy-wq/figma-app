@@ -7,6 +7,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Auth tables — prefixed ops_ to coexist with halo-core-api in the same Neon DB
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -18,25 +20,26 @@ model User {
   approvalToken String?   @unique
   accounts      Account[]
   sessions      Session[]
+
+  @@map("ops_users")
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
-
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
   @@unique([provider, providerAccountId])
+  @@map("ops_accounts")
 }
 
 model Session {
@@ -45,40 +48,49 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("ops_sessions")
 }
 
 model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
-
   @@unique([identifier, token])
+  @@map("ops_verification_tokens")
 }
 
-enum Priority {
-  HIGH
-  MEDIUM
-  LOW
-}
-
-model Client {
-  id            String         @id @default(cuid())
-  name          String
-  employer      String
-  stage         String         @default("Initial Assessment")
-  createdAt     DateTime       @default(now())
-  interventions Intervention[]
-}
+// Ops-specific tables — employers/nurseries/employees are read directly
+// from halo's companies/employees tables via $queryRaw
 
 model Intervention {
   id            String    @id @default(cuid())
-  clientId      String
-  client        Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  entityType    String
+  entityName    String    @default("")
   type          String
-  priority      Priority  @default(MEDIUM)
   assignedTo    String
   dueAt         DateTime
   status        String    @default("pending")
   deferredUntil DateTime?
   createdAt     DateTime  @default(now())
+  // These store halo company/employee UUIDs for reference
+  employerId    String?
+  nurseryId     String?
+  employeeId    String?
+
+  @@map("ops_interventions")
+}
+
+model Note {
+  id         String   @id @default(cuid())
+  content    String
+  authorName String   @default("Craig")
+  createdAt  DateTime @default(now())
+  entityType String
+  // These store halo company/employee UUIDs for reference
+  employerId String?
+  nurseryId  String?
+  employeeId String?
+
+  @@map("ops_notes")
 }

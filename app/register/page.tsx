@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { BASE_PATH } from "@/lib/basePath";
 import Link from "next/link";
 import HaloLogo from "@/app/components/HaloLogo";
 import { CheckCircle } from "lucide-react";
@@ -15,7 +16,7 @@ export default function RegisterPage() {
   async function handleSubmit(e: import("react").FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
-    const res = await fetch("/api/register", {
+    const res = await fetch(`${BASE_PATH}/api/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, name }),

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
+import { BASE_PATH } from "@/lib/basePath";
 
 type CalendarEvent = {
   id: string;
@@ -57,7 +58,7 @@ export default function CalendarPage() {
   const [loading, setLoading]       = useState(true);
 
   useEffect(() => {
-    fetch("/api/calendar")
+    fetch(`${BASE_PATH}/api/calendar`)
       .then((r) => r.json())
       .then((data) => { setEvents(data); setLoading(false); })
       .catch(() => setLoading(false));

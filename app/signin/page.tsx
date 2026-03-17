@@ -11,6 +11,9 @@ function SignInForm() {
   const [password, setPassword] = useState("");
   const [error, setError]       = useState("");
   const [banner, setBanner]     = useState("");
+  const [mode, setMode]         = useState<"password" | "magic">("password");
+  const [magicSent, setMagicSent] = useState(false);
+  const [loading, setLoading]   = useState(false);
   const router       = useRouter();
   const searchParams = useSearchParams();
 
@@ -19,7 +22,7 @@ function SignInForm() {
     if (searchParams.get("error") === "invalid-token") setBanner("That approval link is invalid or has already been used.");
   }, [searchParams]);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handlePassword(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
     const result = await signIn("credentials", { email, password, redirect: false });
@@ -30,6 +33,15 @@ function SignInForm() {
     } else {
       setError("Invalid email or password.");
     }
+  }
+
+  async function handleMagicLink(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    await signIn("email", { email, redirect: false });
+    setLoading(false);
+    setMagicSent(true);
   }
 
   return (
@@ -48,33 +60,77 @@ function SignInForm() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="rounded-lg border border-[#e2e8f0] px-4 py-2.5 text-sm text-[#0f172a] outline-none focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="rounded-lg border border-[#e2e8f0] px-4 py-2.5 text-sm text-[#0f172a] outline-none focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20"
-          />
-          {error && (
-            <p className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-xs text-red-700">{error}</p>
-          )}
+        {/* Mode toggle */}
+        <div className="mb-5 flex rounded-lg border border-[#e2e8f0] p-1 text-xs font-medium">
           <button
-            type="submit"
-            className="mt-1 rounded-lg bg-[#3b82f6] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#2563eb] transition-colors"
+            onClick={() => { setMode("password"); setError(""); setMagicSent(false); }}
+            className={`flex-1 rounded-md py-1.5 transition-colors ${mode === "password" ? "bg-[#0f172a] text-white" : "text-[#64748b] hover:text-[#0f172a]"}`}
           >
-            Sign in
+            Password
           </button>
-        </form>
+          <button
+            onClick={() => { setMode("magic"); setError(""); setMagicSent(false); }}
+            className={`flex-1 rounded-md py-1.5 transition-colors ${mode === "magic" ? "bg-[#0f172a] text-white" : "text-[#64748b] hover:text-[#0f172a]"}`}
+          >
+            Email link
+          </button>
+        </div>
+
+        {mode === "password" ? (
+          <form onSubmit={handlePassword} className="flex flex-col gap-4">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="rounded-lg border border-[#e2e8f0] px-4 py-2.5 text-sm text-[#0f172a] outline-none focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20"
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="rounded-lg border border-[#e2e8f0] px-4 py-2.5 text-sm text-[#0f172a] outline-none focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20"
+            />
+            {error && (
+              <p className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-xs text-red-700">{error}</p>
+            )}
+            <button
+              type="submit"
+              className="mt-1 rounded-lg bg-[#3b82f6] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#2563eb] transition-colors"
+            >
+              Sign in
+            </button>
+          </form>
+        ) : magicSent ? (
+          <div className="rounded-lg bg-green-50 border border-green-200 px-4 py-5 text-center">
+            <p className="text-sm font-medium text-green-700">Check your email</p>
+            <p className="mt-1 text-xs text-green-600">We sent a sign-in link to <strong>{email}</strong></p>
+          </div>
+        ) : (
+          <form onSubmit={handleMagicLink} className="flex flex-col gap-4">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="rounded-lg border border-[#e2e8f0] px-4 py-2.5 text-sm text-[#0f172a] outline-none focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20"
+            />
+            {error && (
+              <p className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-xs text-red-700">{error}</p>
+            )}
+            <button
+              type="submit"
+              disabled={loading}
+              className="mt-1 rounded-lg bg-[#3b82f6] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#2563eb] transition-colors disabled:opacity-50"
+            >
+              {loading ? "Sending…" : "Send sign-in link"}
+            </button>
+          </form>
+        )}
 
         <p className="mt-6 text-center text-xs text-[#64748b]">
           Don&apos;t have an account?{" "}
