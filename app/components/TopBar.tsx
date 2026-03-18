@@ -45,8 +45,32 @@ export default function TopBar({ userName }: { userName?: string | null }) {
   const router   = useRouter();
   const breadcrumb = breadcrumbMap[pathname] ?? "Dashboard";
 
-  const [userOpen, setUserOpen] = useState(false);
-  const [bellOpen, setBellOpen] = useState(false);
+  const [userOpen, setUserOpen]       = useState(false);
+  const [bellOpen, setBellOpen]       = useState(false);
+  const [pwOpen,   setPwOpen]         = useState(false);
+  const [pwCurrent, setPwCurrent]     = useState("");
+  const [pwNew,     setPwNew]         = useState("");
+  const [pwConfirm, setPwConfirm]     = useState("");
+  const [pwError,   setPwError]       = useState("");
+  const [pwSuccess, setPwSuccess]     = useState(false);
+  const [pwLoading, setPwLoading]     = useState(false);
+
+  function openChangePw() { setUserOpen(false); setPwOpen(true); setPwError(""); setPwSuccess(false); setPwCurrent(""); setPwNew(""); setPwConfirm(""); }
+
+  async function handleChangePw(e: React.FormEvent) {
+    e.preventDefault();
+    if (pwNew !== pwConfirm) { setPwError("New passwords don't match."); return; }
+    if (pwNew.length < 8) { setPwError("Password must be at least 8 characters."); return; }
+    setPwLoading(true); setPwError("");
+    const res = await fetch(`${BASE_PATH}/api/change-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ currentPassword: pwCurrent, newPassword: pwNew }),
+    });
+    setPwLoading(false);
+    if (res.ok) { setPwSuccess(true); }
+    else { const d = await res.json(); setPwError(d.error ?? "Something went wrong."); }
+  }
   const [overdue,  setOverdue]  = useState<TaskRow[]>([]);
   const [today,    setToday]    = useState<TaskRow[]>([]);
   const bellRef = useRef<HTMLDivElement>(null);
@@ -195,9 +219,16 @@ export default function TopBar({ userName }: { userName?: string | null }) {
           </button>
 
           {userOpen && (
-            <div className="absolute right-0 top-full mt-1 w-40 rounded-lg border border-[#e2e8f0] bg-white py-1 shadow-lg">
+            <div className="absolute right-0 top-full mt-1 w-44 rounded-lg border border-[#e2e8f0] bg-white py-1 shadow-lg">
               <button
-                onClick={() => signOut({ callbackUrl: "/signin" })}
+                onClick={openChangePw}
+                className="w-full px-4 py-2 text-left text-sm text-[#0f172a] hover:bg-[#f1f5f9]"
+              >
+                Change password
+              </button>
+              <div className="my-1 border-t border-[#f1f5f9]" />
+              <button
+                onClick={() => signOut({ callbackUrl: "/admin/ops/signin" })}
                 className="w-full px-4 py-2 text-left text-sm text-[#ef4444] hover:bg-[#fef2f2]"
               >
                 Sign out
@@ -206,6 +237,47 @@ export default function TopBar({ userName }: { userName?: string | null }) {
           )}
         </div>
       </div>
+
+      {/* Change password modal */}
+      {pwOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="w-full max-w-sm rounded-2xl bg-white px-8 py-8 shadow-2xl">
+            <h2 className="text-lg font-semibold text-[#0f172a]">Change password</h2>
+
+            {pwSuccess ? (
+              <div className="mt-4 rounded-lg bg-green-50 border border-green-200 px-4 py-4 text-sm text-green-700">
+                Password updated successfully.
+                <button onClick={() => setPwOpen(false)} className="mt-3 block w-full rounded-lg bg-[#0f172a] py-2 text-sm font-medium text-white hover:bg-[#1e293b]">Close</button>
+              </div>
+            ) : (
+              <form onSubmit={handleChangePw} className="mt-4 flex flex-col gap-3">
+                <input
+                  type="password" placeholder="Current password" required
+                  value={pwCurrent} onChange={(e) => setPwCurrent(e.target.value)}
+                  className="rounded-lg border border-[#e2e8f0] px-4 py-2.5 text-sm outline-none focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20"
+                />
+                <input
+                  type="password" placeholder="New password" required
+                  value={pwNew} onChange={(e) => setPwNew(e.target.value)}
+                  className="rounded-lg border border-[#e2e8f0] px-4 py-2.5 text-sm outline-none focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20"
+                />
+                <input
+                  type="password" placeholder="Confirm new password" required
+                  value={pwConfirm} onChange={(e) => setPwConfirm(e.target.value)}
+                  className="rounded-lg border border-[#e2e8f0] px-4 py-2.5 text-sm outline-none focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20"
+                />
+                {pwError && <p className="rounded-lg bg-red-50 border border-red-200 px-4 py-2 text-xs text-red-700">{pwError}</p>}
+                <div className="flex gap-2 mt-1">
+                  <button type="button" onClick={() => setPwOpen(false)} className="flex-1 rounded-lg border border-[#e2e8f0] py-2.5 text-sm font-medium text-[#64748b] hover:bg-[#f8fafc]">Cancel</button>
+                  <button type="submit" disabled={pwLoading} className="flex-1 rounded-lg bg-[#3b82f6] py-2.5 text-sm font-medium text-white hover:bg-[#2563eb] disabled:opacity-50">
+                    {pwLoading ? "Saving…" : "Update"}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </header>
   );
 }

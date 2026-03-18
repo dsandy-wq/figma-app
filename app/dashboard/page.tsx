@@ -31,26 +31,23 @@ export default async function DashboardPage() {
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
   const todayEnd   = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
 
-  const include = { employer: true, nursery: true, employee: true } as const;
-
   const [
-    employersInProgress,
-    nurseriesInProgress,
-    employeesInProgress,
+    [{ count: employersInProgressRaw }],
+    [{ count: nurseriesInProgressRaw }],
+    [{ count: employeesInProgressRaw }],
     todayInterventions,
     overdueInterventions,
     totalInterventionsDue,
   ] = await Promise.all([
-    prisma.employer.count({ where: { stage: { not: "Live" } } }),
-    prisma.nursery.count({  where: { stage: { not: "Live" } } }),
-    prisma.employee.count({ where: { stage: { not: "Active" } } }),
+    prisma.$queryRaw<[{ count: bigint }]>`SELECT COUNT(*)::int AS count FROM companies WHERE is_nursery = false AND onboarding_status != 'Live'`,
+    prisma.$queryRaw<[{ count: bigint }]>`SELECT COUNT(*)::int AS count FROM companies WHERE is_nursery = true  AND onboarding_status != 'Live'`,
+    prisma.$queryRaw<[{ count: bigint }]>`SELECT COUNT(*)::int AS count FROM employees WHERE status NOT IN ('APPROVED', 'LINKED')`,
     prisma.intervention.findMany({
       where: {
         status: "pending",
         dueAt:  { gte: todayStart, lte: todayEnd },
         OR: [{ deferredUntil: null }, { deferredUntil: { lte: now } }],
       },
-      include,
       orderBy: { dueAt: "asc" },
     }),
     prisma.intervention.findMany({
@@ -59,7 +56,6 @@ export default async function DashboardPage() {
         dueAt:  { lt: todayStart },
         OR: [{ deferredUntil: null }, { deferredUntil: { lte: now } }],
       },
-      include,
       orderBy: { dueAt: "asc" },
     }),
     prisma.intervention.count({
@@ -70,15 +66,12 @@ export default async function DashboardPage() {
     }),
   ]);
 
-  function resolveEntityName(i: typeof todayInterventions[number]) {
-    if (i.employer)      return i.employer.name;
-    if (i.nursery)       return i.nursery.name;
-    if (i.employee)      return `${i.employee.firstName} ${i.employee.lastName}`;
-    return "Unknown";
-  }
+  const employersInProgress = Number(employersInProgressRaw);
+  const nurseriesInProgress = Number(nurseriesInProgressRaw);
+  const employeesInProgress = Number(employeesInProgressRaw);
 
-  const overdueRows = overdueInterventions.map((i) => ({ ...i, entityName: resolveEntityName(i) }));
-  const todayRows   = todayInterventions.map((i)   => ({ ...i, entityName: resolveEntityName(i) }));
+  const overdueRows = overdueInterventions;
+  const todayRows   = todayInterventions;
 
   return (
     <div className="space-y-6">

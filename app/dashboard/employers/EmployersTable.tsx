@@ -12,6 +12,7 @@ type Employer = {
   stage:          string;
   status:         string;
   stageEnteredAt: Date;
+  hasMandate:     boolean;
 };
 
 type NotesTarget = { id: string; name: string };
@@ -72,13 +73,14 @@ export default function EmployersTable({ employers }: { employers: Employer[] })
               <th className="px-6 py-3 font-medium">Name</th>
               <th className="px-6 py-3 font-medium">Contact</th>
               <th className="px-6 py-3 font-medium">Stage</th>
+              <th className="px-6 py-3 font-medium">DD Mandate</th>
               <th className="px-6 py-3 font-medium">Status</th>
               <th className="px-6 py-3 font-medium"></th>
             </tr>
           </thead>
           <tbody>
             {visible.length === 0 ? (
-              <tr><td colSpan={6} className="px-6 py-10 text-center text-sm text-[#64748b]">No employers match.</td></tr>
+              <tr><td colSpan={7} className="px-6 py-10 text-center text-sm text-[#64748b]">No employers match.</td></tr>
             ) : visible.map((e) => {
               const sla = getSlaStatus(e.stage, e.stageEnteredAt, EMPLOYER_STAGES);
               return (
@@ -92,6 +94,11 @@ export default function EmployersTable({ employers }: { employers: Employer[] })
                     {e.contactEmail && <div className="text-xs text-[#94a3b8]">{e.contactEmail}</div>}
                   </td>
                   <td className="px-6 py-4 text-[#64748b]">{e.stage}</td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${e.hasMandate ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-400"}`}>
+                      {e.hasMandate ? "✓ Active" : "Not set up"}
+                    </span>
+                  </td>
                   <td className="px-6 py-4">
                     <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusColor[e.status] ?? "bg-gray-100 text-gray-700"}`}>
                       {e.status}

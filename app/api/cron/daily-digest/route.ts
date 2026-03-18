@@ -7,19 +7,13 @@ import { overviewEmail, staffEmail } from "@/lib/emailTemplates";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 function mapIntervention(i: {
+  entityName: string;
   entityType: string;
   type:       string;
   assignedTo: string;
   dueAt:      Date;
-  employer:   { name: string } | null;
-  nursery:    { name: string } | null;
-  employee:   { firstName: string; lastName: string } | null;
 }, daysOverdue?: number) {
-  let entityName = "Unknown";
-  if (i.employer)      entityName = i.employer.name;
-  else if (i.nursery)  entityName = i.nursery.name;
-  else if (i.employee) entityName = `${i.employee.firstName} ${i.employee.lastName}`;
-  return { entityName, entityType: i.entityType, type: i.type, assignedTo: i.assignedTo, dueAt: i.dueAt, daysOverdue };
+  return { entityName: i.entityName, entityType: i.entityType, type: i.type, assignedTo: i.assignedTo, dueAt: i.dueAt, daysOverdue };
 }
 
 export async function GET(req: Request) {
@@ -32,27 +26,21 @@ export async function GET(req: Request) {
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
   const todayEnd   = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59);
 
-  const include = { employer: true, nursery: true, employee: true } as const;
-
   const [todayRaw, overdueRaw] = await Promise.all([
-    // Interventions due today
     prisma.intervention.findMany({
       where: {
         status: "pending",
         dueAt:  { gte: todayStart, lte: todayEnd },
         OR: [{ deferredUntil: null }, { deferredUntil: { lte: now } }],
       },
-      include,
       orderBy: { dueAt: "asc" },
     }),
-    // SLA breaches — pending and past due (before today)
     prisma.intervention.findMany({
       where: {
         status: "pending",
         dueAt:  { lt: todayStart },
         OR: [{ deferredUntil: null }, { deferredUntil: { lte: now } }],
       },
-      include,
       orderBy: { dueAt: "asc" },
     }),
   ]);
