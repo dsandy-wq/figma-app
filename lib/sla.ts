@@ -11,14 +11,13 @@ export const EMPLOYER_STAGES: SlaStage[] = [
 ];
 
 export const NURSERY_STAGES: SlaStage[] = [
-  { name: "Signed Up",             slaHours: 24, trigger: "Profile not completed" },
-  { name: "Profile Complete",      slaHours: 12, trigger: "Verification not initiated" },
-  { name: "Verification Pending",  slaHours: 24, trigger: "Stuck in pending review" },
-  { name: "Documents Requested",   slaHours: 72, trigger: "Docs not uploaded" },
-  { name: "Documents Submitted",   slaHours: 24, trigger: "Ops haven't reviewed" },
-  { name: "Approved",              slaHours: 12, trigger: "Agreement not sent" },
-  { name: "Agreement Sent",        slaHours: 72, trigger: "Not signed" },
-  { name: "Live",                  slaHours: 0,  trigger: "Regulator alert fires" },
+  { name: "Signed Up",             slaHours: 24,  trigger: "Profile not completed" },
+  { name: "Profile Complete",      slaHours: 12,  trigger: "Verification not initiated" },
+  { name: "Verification Pending",  slaHours: 24,  trigger: "Stuck in pending review" },
+  { name: "Documents Submitted",   slaHours: 24,  trigger: "Ops haven't reviewed" },
+  { name: "Approved",              slaHours: 12,  trigger: "Agreement not sent" },
+  { name: "Agreement Sent",        slaHours: 72,  trigger: "Not signed" },
+  { name: "Live",                  slaHours: 0,   trigger: "Regulator alert fires" },
 ];
 
 export const EMPLOYEE_STAGES: SlaStage[] = [
