@@ -77,15 +77,28 @@ function formatDate(d: Date | null) {
   return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 }
 
-function ApprovalPip({ ok, label }: { ok: boolean; label: string }) {
+function ApprovalPip({ ok, label, description }: { ok: boolean; label: string; description: string }) {
   return (
-    <span
-      title={label}
-      className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold ${
-        ok ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-400"
-      }`}
-    >
-      {ok ? "✓" : "·"}
+    <span className="relative group inline-flex">
+      <span
+        className={`inline-flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold cursor-default ${
+          ok ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-400"
+        }`}
+      >
+        {ok ? "✓" : "·"}
+      </span>
+      {/* Tooltip */}
+      <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-50 w-48 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+        <span className="block rounded-lg bg-[#0f172a] px-3 py-2 text-left shadow-xl">
+          <span className="block text-xs font-semibold text-white mb-0.5">{label}</span>
+          <span className="block text-[11px] text-[#94a3b8] leading-snug">{description}</span>
+          <span className={`mt-1.5 block text-[10px] font-semibold ${ok ? "text-green-400" : "text-amber-400"}`}>
+            {ok ? "✓ Complete" : "⏳ Pending"}
+          </span>
+        </span>
+        {/* Arrow */}
+        <span className="block w-2.5 h-2.5 bg-[#0f172a] rotate-45 mx-auto -mt-1.5 rounded-sm" />
+      </span>
     </span>
   );
 }
@@ -142,13 +155,16 @@ export default function ArrangementsTable({ rows }: { rows: ArrangementRow[] }) 
 
       {/* Table */}
       <div className="rounded-xl bg-white shadow-sm overflow-hidden">
-        <div className="border-b border-[#f1f5f9] px-6 py-4 flex flex-wrap items-center gap-4">
-          <input
-            placeholder="Search by name, employer, nursery, ref…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="rounded-lg border border-[#e2e8f0] px-3 py-2 text-sm w-72 focus:outline-none focus:ring-2 focus:ring-[#3b82f6]"
-          />
+        <div className="border-b border-[#f1f5f9] px-6 py-4 flex flex-wrap items-end gap-4">
+          <div className="flex flex-col gap-1">
+            <label className="text-xs font-medium text-[#64748b]">Search</label>
+            <input
+              placeholder="Name, employer, nursery, ref…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="rounded-lg border border-[#e2e8f0] px-3 py-2 text-sm w-72 focus:outline-none focus:ring-2 focus:ring-[#3b82f6]"
+            />
+          </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs font-medium text-[#64748b]">Stage</label>
             <select
@@ -203,11 +219,11 @@ export default function ArrangementsTable({ rows }: { rows: ArrangementRow[] }) 
                   <td className="px-6 py-4 text-[#64748b]">{formatDate(r.start_date)}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-1">
-                      <ApprovalPip ok={r.employer_approved}  label="Employer approved" />
-                      <ApprovalPip ok={r.employee_approved}  label="Employee approved" />
-                      <ApprovalPip ok={r.nursery_validated}  label="Nursery validated" />
+                      <ApprovalPip ok={r.employer_approved} label="Employer" description="The employer has reviewed and approved the salary sacrifice arrangement for this employee." />
+                      <ApprovalPip ok={r.employee_approved} label="Employee" description="The employee has agreed to the terms of their Halo Pay arrangement." />
+                      <ApprovalPip ok={r.nursery_validated} label="Nursery" description="The nursery has confirmed the child's place and validated the arrangement details." />
                       {r.contract_addendum_required && (
-                        <ApprovalPip ok={r.addendum_signed} label="Addendum signed" />
+                        <ApprovalPip ok={r.addendum_signed} label="Addendum" description="The employee has signed the salary sacrifice addendum — the formal legal amendment to their employment contract." />
                       )}
                     </div>
                   </td>
