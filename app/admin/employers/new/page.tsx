@@ -40,7 +40,7 @@ export default function NewEmployerPage() {
       return;
     }
 
-    router.push("/dashboard/employers");
+    router.push("/admin/employers");
     router.refresh();
   }
 

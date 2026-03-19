@@ -1,1 +1,1 @@
-export const BASE_PATH = "/admin/ops";
+export const BASE_PATH = "/dbhalo";

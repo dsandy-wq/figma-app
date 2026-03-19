@@ -79,10 +79,10 @@ export default async function DashboardPage() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-4 gap-4">
-        <StatCard label="Employers Onboarding"  value={employersInProgress}   color="purple" Icon={Building2}   href="/dashboard/employers" />
-        <StatCard label="Nurseries Onboarding"  value={nurseriesInProgress}   color="green"  Icon={Home}        href="/dashboard/nurseries" />
-        <StatCard label="Employees In Progress" value={employeesInProgress}   color="blue"   Icon={Users}       href="/dashboard/employees" />
-        <StatCard label="Interventions Due"     value={totalInterventionsDue} color="red"    Icon={AlertCircle} href="/dashboard/interventions" />
+        <StatCard label="Employers Onboarding"  value={employersInProgress}   color="purple" Icon={Building2}   href="/admin/employers" />
+        <StatCard label="Nurseries Onboarding"  value={nurseriesInProgress}   color="green"  Icon={Home}        href="/admin/nurseries" />
+        <StatCard label="Employees In Progress" value={employeesInProgress}   color="blue"   Icon={Users}       href="/admin/employees" />
+        <StatCard label="Interventions Due"     value={totalInterventionsDue} color="red"    Icon={AlertCircle} href="/admin/interventions" />
       </div>
 
       {/* SLA breach alert — only shown when there are overdue items */}
@@ -93,7 +93,7 @@ export default async function DashboardPage() {
             <h2 className="font-semibold text-red-800">
               SLA Breaches — {overdueRows.length} overdue intervention{overdueRows.length !== 1 ? "s" : ""}
             </h2>
-            <Link href="/dashboard/interventions" className="ml-auto text-xs font-medium text-red-600 hover:underline">
+            <Link href="/admin/interventions" className="ml-auto text-xs font-medium text-red-600 hover:underline">
               View all →
             </Link>
           </div>
@@ -120,7 +120,7 @@ export default async function DashboardPage() {
                   <td className="px-6 py-3 font-semibold text-red-600 whitespace-nowrap">{daysOverdueLabel(r.dueAt)}</td>
                   <td className="px-6 py-3 text-[#64748b]">{r.assignedTo}</td>
                   <td className="px-6 py-3">
-                    <Link href={`/dashboard/interventions?highlight=${r.id}`}
+                    <Link href={`/admin/interventions?highlight=${r.id}`}
                       className="rounded-lg bg-red-600 px-3 py-1 text-xs font-medium text-white hover:bg-red-700">
                       Action
                     </Link>
@@ -144,7 +144,7 @@ export default async function DashboardPage() {
                 </span>
               )}
             </h2>
-            <Link href="/dashboard/interventions" className="text-xs font-medium text-[#3b82f6] hover:underline">
+            <Link href="/admin/interventions" className="text-xs font-medium text-[#3b82f6] hover:underline">
               View all →
             </Link>
           </div>
@@ -173,7 +173,7 @@ export default async function DashboardPage() {
                     <td className="px-6 py-3 text-[#64748b]">{r.type}</td>
                     <td className="px-6 py-3 text-[#64748b] whitespace-nowrap">{formatDue(r.dueAt)}</td>
                     <td className="px-6 py-3">
-                      <Link href={`/dashboard/interventions?highlight=${r.id}`}
+                      <Link href={`/admin/interventions?highlight=${r.id}`}
                         className="rounded-lg bg-[#f1f5f9] px-3 py-1 text-xs font-medium text-[#3b82f6] hover:bg-[#e0e7ff]">
                         Action
                       </Link>
@@ -190,9 +190,9 @@ export default async function DashboardPage() {
           <h2 className="font-semibold text-[#0f172a]">Journey Overview</h2>
 
           {[
-            { label: "Employers", href: "/dashboard/employers", bar: "bg-purple-500", total: employersInProgress },
-            { label: "Nurseries", href: "/dashboard/nurseries", bar: "bg-teal-500",   total: nurseriesInProgress },
-            { label: "Employees", href: "/dashboard/employees", bar: "bg-sky-500",    total: employeesInProgress },
+            { label: "Employers", href: "/admin/employers", bar: "bg-purple-500", total: employersInProgress },
+            { label: "Nurseries", href: "/admin/nurseries", bar: "bg-teal-500",   total: nurseriesInProgress },
+            { label: "Employees", href: "/admin/employees", bar: "bg-sky-500",    total: employeesInProgress },
           ].map((j) => (
             <Link key={j.label} href={j.href} className="block group">
               <div className="flex items-center justify-between mb-1">
@@ -207,13 +207,13 @@ export default async function DashboardPage() {
 
           <div className="border-t border-[#f1f5f9] pt-4 space-y-2">
             {overdueRows.length > 0 && (
-              <Link href="/dashboard/interventions"
+              <Link href="/admin/interventions"
                 className="flex items-center justify-between rounded-lg bg-red-600 px-4 py-3 hover:bg-red-700 transition-colors">
                 <span className="text-sm font-medium text-white">SLA breaches</span>
                 <span className="text-lg font-bold text-white">{overdueRows.length}</span>
               </Link>
             )}
-            <Link href="/dashboard/interventions"
+            <Link href="/admin/interventions"
               className="flex items-center justify-between rounded-lg bg-red-50 px-4 py-3 hover:bg-red-100 transition-colors">
               <span className="text-sm font-medium text-red-700">All pending interventions</span>
               <span className="text-lg font-bold text-red-700">{totalInterventionsDue}</span>

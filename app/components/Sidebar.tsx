@@ -13,42 +13,42 @@ const sections = [
   {
     label: "OVERVIEW",
     items: [
-      { label: "Dashboard",  href: "/dashboard",              icon: LayoutDashboard },
+      { label: "Dashboard",  href: "/admin",              icon: LayoutDashboard },
     ],
   },
   {
     label: "JOURNEYS",
     items: [
-      { label: "Employers",  href: "/dashboard/employers",  icon: Building2 },
-      { label: "Nurseries",  href: "/dashboard/nurseries",  icon: Home },
-      { label: "Employees",  href: "/dashboard/employees",  icon: Users },
+      { label: "Employers",  href: "/admin/employers",  icon: Building2 },
+      { label: "Nurseries",  href: "/admin/nurseries",  icon: Home },
+      { label: "Employees",  href: "/admin/employees",  icon: Users },
     ],
   },
   {
     label: "OPERATIONS",
     items: [
-      { label: "Active Onboardings",  href: "/dashboard/onboardings",   icon: Activity },
-      { label: "Interventions Due",   href: "/dashboard/interventions", icon: AlertCircle, badge: true },
-      { label: "Stage Gates",         href: "/dashboard/stage-gates",   icon: GitBranch },
-      { label: "Task Calendar",       href: "/dashboard/calendar",      icon: Calendar },
+      { label: "Active Onboardings",  href: "/admin/onboardings",   icon: Activity },
+      { label: "Interventions Due",   href: "/admin/interventions", icon: AlertCircle, badge: true },
+      { label: "Stage Gates",         href: "/admin/stage-gates",   icon: GitBranch },
+      { label: "Task Calendar",       href: "/admin/calendar",      icon: Calendar },
     ],
   },
   {
     label: "FINANCE",
     items: [
-      { label: "Invoice Tracker",  href: "/dashboard/invoices",        icon: FileText },
-      { label: "Credit Control",   href: "/dashboard/credit-control",  icon: CreditCard },
-      { label: "Non-Payer Log",    href: "/dashboard/non-payers",      icon: UserX },
+      { label: "Invoice Tracker",  href: "/admin/invoices",        icon: FileText },
+      { label: "Credit Control",   href: "/admin/credit-control",  icon: CreditCard },
+      { label: "Non-Payer Log",    href: "/admin/non-payers",      icon: UserX },
     ],
   },
   {
     label: "LIFECYCLE",
     items: [
-      { label: "Eternal Tracker",     href: "/dashboard/eternal-tracker",   icon: Infinity },
-      { label: "All Arrangements",    href: "/dashboard/arrangements",      icon: BookOpen },
-      { label: "Quarterly Check-ins", href: "/dashboard/check-ins",         icon: Calendar },
-      { label: "Renewals",            href: "/dashboard/renewals",          icon: RefreshCw },
-      { label: "Stage Progression",   href: "/dashboard/stage-progression", icon: TrendingUp },
+      { label: "Eternal Tracker",     href: "/admin/eternal-tracker",   icon: Infinity },
+      { label: "All Arrangements",    href: "/admin/arrangements",      icon: BookOpen },
+      { label: "Quarterly Check-ins", href: "/admin/check-ins",         icon: Calendar },
+      { label: "Renewals",            href: "/admin/renewals",          icon: RefreshCw },
+      { label: "Stage Progression",   href: "/admin/stage-progression", icon: TrendingUp },
     ],
   },
 ];
@@ -98,10 +98,10 @@ export default function Sidebar() {
 
       {/* Bottom */}
       <div className="border-t border-[#1e2d45] px-3 py-3">
-        <Link href="/dashboard/settings" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#94a3b8] hover:bg-[#1e2d45] hover:text-white">
+        <Link href="/admin/settings" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#94a3b8] hover:bg-[#1e2d45] hover:text-white">
           <Settings size={16} /> Settings
         </Link>
-        <Link href="/dashboard/help" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#94a3b8] hover:bg-[#1e2d45] hover:text-white">
+        <Link href="/admin/help" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-[#94a3b8] hover:bg-[#1e2d45] hover:text-white">
           <HelpCircle size={16} /> Help
         </Link>
       </div>

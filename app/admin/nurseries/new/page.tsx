@@ -40,7 +40,7 @@ export default function NewNurseryPage() {
       return;
     }
 
-    router.push("/dashboard/nurseries");
+    router.push("/admin/nurseries");
     router.refresh();
   }
 

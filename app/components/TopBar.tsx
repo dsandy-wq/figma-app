@@ -7,21 +7,21 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { BASE_PATH } from "@/lib/basePath";
 
 const breadcrumbMap: Record<string, string> = {
-  "/dashboard":                   "Clients / Dashboard",
-  "/dashboard/clients":           "Clients / All Clients",
-  "/dashboard/clients/new":       "Clients / New Client",
-  "/dashboard/onboardings":       "Operations / Active Onboardings",
-  "/dashboard/interventions":     "Operations / Interventions Due",
-  "/dashboard/stage-gates":       "Operations / Stage Gates",
-  "/dashboard/calendar":          "Operations / Task Calendar",
-  "/dashboard/invoices":          "Finance / Invoice Tracker",
-  "/dashboard/credit-control":    "Finance / Credit Control",
-  "/dashboard/non-payers":        "Finance / Non-Payer Log",
-  "/dashboard/eternal-tracker":   "Lifecycle / Eternal Tracker",
-  "/dashboard/arrangements":      "Lifecycle / All Arrangements",
-  "/dashboard/check-ins":         "Lifecycle / Quarterly Check-ins",
-  "/dashboard/renewals":          "Lifecycle / Renewals",
-  "/dashboard/stage-progression": "Lifecycle / Stage Progression",
+  "/admin":                   "Clients / Dashboard",
+  "/admin/clients":           "Clients / All Clients",
+  "/admin/clients/new":       "Clients / New Client",
+  "/admin/onboardings":       "Operations / Active Onboardings",
+  "/admin/interventions":     "Operations / Interventions Due",
+  "/admin/stage-gates":       "Operations / Stage Gates",
+  "/admin/calendar":          "Operations / Task Calendar",
+  "/admin/invoices":          "Finance / Invoice Tracker",
+  "/admin/credit-control":    "Finance / Credit Control",
+  "/admin/non-payers":        "Finance / Non-Payer Log",
+  "/admin/eternal-tracker":   "Lifecycle / Eternal Tracker",
+  "/admin/arrangements":      "Lifecycle / All Arrangements",
+  "/admin/check-ins":         "Lifecycle / Quarterly Check-ins",
+  "/admin/renewals":          "Lifecycle / Renewals",
+  "/admin/stage-progression": "Lifecycle / Stage Progression",
 };
 
 type TaskRow = {
@@ -108,7 +108,7 @@ export default function TopBar({ userName }: { userName?: string | null }) {
 
   function goToTask(id: string) {
     setBellOpen(false);
-    router.push(`/dashboard/interventions?highlight=${id}`);
+    router.push(`/admin/interventions?highlight=${id}`);
   }
 
   return (
@@ -195,7 +195,7 @@ export default function TopBar({ userName }: { userName?: string | null }) {
 
               <div className="border-t border-[#f1f5f9] px-4 py-2.5">
                 <button
-                  onClick={() => { setBellOpen(false); router.push("/dashboard/interventions"); }}
+                  onClick={() => { setBellOpen(false); router.push("/admin/interventions"); }}
                   className="text-xs font-medium text-[#3b82f6] hover:underline"
                 >
                   View all interventions →
@@ -228,7 +228,7 @@ export default function TopBar({ userName }: { userName?: string | null }) {
               </button>
               <div className="my-1 border-t border-[#f1f5f9]" />
               <button
-                onClick={() => signOut({ callbackUrl: "/admin/ops/signin" })}
+                onClick={() => signOut({ callbackUrl: "/dbhalo/signin" })}
                 className="w-full px-4 py-2 text-left text-sm text-[#ef4444] hover:bg-[#fef2f2]"
               >
                 Sign out

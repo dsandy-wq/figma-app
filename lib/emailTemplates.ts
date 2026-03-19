@@ -97,7 +97,7 @@ export function overviewEmail(
       ${breachSection}
       <p style="color:#475569;">Good morning Craig. Here's a summary of all <strong>${interventions.length} intervention${interventions.length !== 1 ? "s" : ""}</strong> due today across the team.</p>
       ${sections}
-      <p style="margin-top:32px;font-size:13px;color:#94a3b8;">View the full dashboard at <a href="${process.env.NEXTAUTH_URL}/dashboard/interventions" style="color:#3b82f6;">Halo Ops Dashboard</a></p>
+      <p style="margin-top:32px;font-size:13px;color:#94a3b8;">View the full dashboard at <a href="${process.env.NEXTAUTH_URL}/admin/interventions" style="color:#3b82f6;">Halo Ops Dashboard</a></p>
     </div>`;
 }
 
@@ -128,6 +128,6 @@ export function staffEmail(person: string, interventions: InterventionItem[], da
           </tr>`).join("")}
         </tbody>
       </table>
-      <p style="margin-top:32px;font-size:13px;color:#94a3b8;">View your queue at <a href="${process.env.NEXTAUTH_URL}/dashboard/interventions" style="color:#3b82f6;">Halo Ops Dashboard</a></p>
+      <p style="margin-top:32px;font-size:13px;color:#94a3b8;">View your queue at <a href="${process.env.NEXTAUTH_URL}/admin/interventions" style="color:#3b82f6;">Halo Ops Dashboard</a></p>
     </div>`;
 }

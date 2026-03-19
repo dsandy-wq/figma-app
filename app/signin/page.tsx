@@ -27,7 +27,7 @@ function SignInForm() {
     setError("");
     const result = await signIn("credentials", { email, password, redirect: false });
     if (result?.ok) {
-      router.push("/dashboard");
+      router.push("/admin");
     } else if (result?.error === "pending-approval") {
       setError("Your account is awaiting approval. You'll be able to sign in once approved.");
     } else {

@@ -44,7 +44,7 @@ export default function NewEmployeePage() {
       return;
     }
 
-    router.push("/dashboard/employees");
+    router.push("/admin/employees");
     router.refresh();
   }
 

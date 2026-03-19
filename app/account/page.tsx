@@ -30,7 +30,7 @@ export default async function AccountPage() {
               Home
             </Link>
 
-            <Link className="rounded border px-4 py-2" href="/api/auth/signout">
+            <Link className="rounded border px-4 py-2" href="/api/auth/signout?callbackUrl=/dbhalo/signin">
               Sign out
             </Link>
           </div>
