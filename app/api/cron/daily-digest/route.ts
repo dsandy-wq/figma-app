@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
 import { prisma } from "@/lib/prisma";
 import { TEAM } from "@/lib/team";
 import { overviewEmail, staffEmail } from "@/lib/emailTemplates";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 function mapIntervention(i: {
   entityName: string;
@@ -59,32 +56,23 @@ export async function GET(req: Request) {
     weekday: "long", day: "numeric", month: "long", year: "numeric",
   });
 
-  const results: string[] = [];
+  // Resend email transport removed (HAL-1687 dead-vendor cleanup). The digest
+  // is still computed and rendered; it is returned in the response rather than
+  // emailed. Re-wire a transport here if this route is ever revived.
+  const overviewHtml = overviewEmail(items, slaBreaches, dateLabel);
+  const staffDigests = TEAM.map((member) => ({
+    name:  member.name,
+    email: member.email,
+    items: items.filter((i) => i.assignedTo === member.name),
+  }))
+    .filter((d) => d.items.length > 0)
+    .map((d) => ({ name: d.name, email: d.email, html: staffEmail(d.name, d.items, dateLabel) }));
 
-  // Overview email to Craig (includes SLA breaches section)
-  const overviewResult = await resend.emails.send({
-    from:    "Halo Ops <noreply@dbhalo.com>",
-    to:      "craig@dbhalo.com",
-    subject: slaBreaches.length > 0
-      ? `Halo Ops — Daily Overview ⚠ ${slaBreaches.length} SLA breach${slaBreaches.length !== 1 ? "es" : ""} (${now.toLocaleDateString("en-GB")})`
-      : `Halo Ops — Daily Overview (${now.toLocaleDateString("en-GB")})`,
-    html: overviewEmail(items, slaBreaches, dateLabel),
+  return NextResponse.json({
+    ok: true,
+    sent: 0,
+    slaBreaches: slaBreaches.length,
+    overviewHtml,
+    staffDigests,
   });
-  results.push(`overview → craig@dbhalo.com (${overviewResult.error ? "FAILED: " + overviewResult.error.message : "ok"})`);
-
-  // Individual emails to each team member (today's tasks only)
-  for (const member of TEAM) {
-    const myItems = items.filter((i) => i.assignedTo === member.name);
-    if (myItems.length === 0) continue;
-
-    const staffResult = await resend.emails.send({
-      from:    "Halo Ops <noreply@dbhalo.com>",
-      to:      member.email,
-      subject: `Your Halo tasks for ${now.toLocaleDateString("en-GB")} (${myItems.length})`,
-      html:    staffEmail(member.name, myItems, dateLabel),
-    });
-    results.push(`${member.name} → ${member.email} (${staffResult.error ? "FAILED: " + staffResult.error.message : "ok"})`);
-  }
-
-  return NextResponse.json({ ok: true, sent: results.length, slaBreaches: slaBreaches.length, results });
 }
