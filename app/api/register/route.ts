@@ -3,7 +3,9 @@ import bcrypt from "bcryptjs";
 import { randomBytes } from "crypto";
 import { prisma } from "@/lib/prisma";
 
-const SITE_URL    = process.env.NEXTAUTH_URL ?? "https://figma-app-black.vercel.app";
+// Vercel decommissioned (HAL-1688). NEXTAUTH_URL is set in the deployed
+// env; the localhost fallback only applies to local dev.
+const SITE_URL    = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
 const ADMIN_EMAIL = "craig@dbhalo.com";
 
 export async function POST(request: Request) {
