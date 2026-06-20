@@ -5,7 +5,10 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const token = searchParams.get("token");
 
-  const SITE_URL = process.env.NEXTAUTH_URL ?? "https://figma-app-black.vercel.app";
+  // Vercel decommissioned (HAL-1688). NEXTAUTH_URL is set in the deployed
+  // env; the localhost fallback only applies to local dev (no live Vercel
+  // host to redirect to).
+  const SITE_URL = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
 
   if (!token)
     return NextResponse.redirect(`${SITE_URL}/signin?error=invalid-token`);
