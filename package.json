@@ -18,7 +18,7 @@
     "bcryptjs": "^3.0.3",
     "lucide-react": "^0.576.0",
     "next": "16.1.6",
-    "next-auth": "^4.24.13",
+    "next-auth": "^4.24.15",
     "nodemailer": "^7.0.13",
     "prisma": "^6.19.2",
     "react": "19.2.3",
